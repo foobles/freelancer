@@ -1,6 +1,6 @@
 package freelancer;
 
 @FunctionalInterface
-public interface ScriptEvent<NpcReg> {
-    void run(Player p, NpcReg npcs);
+public interface ScriptEvent<Env> {
+    void run(Player p, Env env);
 }

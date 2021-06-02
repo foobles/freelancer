@@ -2,14 +2,14 @@ package freelancer;
 
 import java.util.List;
 
-public final class Npc<ScriptReg, NpcReg> {
+public final class Npc<ScriptReg, Env> {
     private String name;
     private final String description;
-    private final NpcBrain<ScriptReg, NpcReg> brain;
+    private final NpcBrain<ScriptReg, Env> brain;
     private Emotion emotion = Emotion.NEUTRAL;
     private boolean knowsPlayer = false;
 
-    public Npc(String name, String description, NpcBrain<ScriptReg, NpcReg> brain) {
+    public Npc(String name, String description, NpcBrain<ScriptReg, Env> brain) {
         this.name = name;
         this.description = description;
         this.brain = brain;
@@ -47,11 +47,11 @@ public final class Npc<ScriptReg, NpcReg> {
         this.knowsPlayer = knowsPlayer;
     }
 
-    public List<Prompt<Script<NpcReg>>> getDialogPrompts(ScriptReg scripts) {
+    public List<Prompt<Script<Env>>> getDialogPrompts(ScriptReg scripts) {
         return brain.getDialogPrompts(scripts);
     }
 
-    public Script<NpcReg> getEvidenceResponse(ScriptReg scripts, Object id) {
+    public Script<Env> getEvidenceResponse(ScriptReg scripts, Object id) {
         return brain.getEvidenceResponse(scripts, id);
     }
 }

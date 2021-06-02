@@ -1,6 +1,6 @@
 package freelancer;
 
-public final class TextMessage<NpcReg> implements ScriptEvent<NpcReg> {
+public final class TextMessage<Env> implements ScriptEvent<Env> {
     private final String speakerName;
     private final String[] lines;
 
@@ -14,7 +14,7 @@ public final class TextMessage<NpcReg> implements ScriptEvent<NpcReg> {
     }
 
     @Override
-    public void run(Player p, Object npcs) {
+    public void run(Player p, Env env) {
         System.out.println(speakerName + ":");
         for (String line : lines) {
             System.out.print("    ");
