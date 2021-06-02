@@ -13,6 +13,10 @@ public class Main {
             Script<Scene1NpcReg> testDialog2
     ) {}
 
+    private enum Action {
+        TALK, MOVE, EXAMINE, PRESENT
+    }
+
     public static void main(String[] args) {
         var npcs = new Scene1NpcReg(
                 new Npc<>(
@@ -30,10 +34,10 @@ public class Main {
                             }
 
                             @Override
-                            public List<DialogPrompt<Scene1NpcReg>> getDialogPrompts(Scene1ScriptReg scripts) {
+                            public List<Prompt<Script<Scene1NpcReg>>> getDialogPrompts(Scene1ScriptReg scripts) {
                                 return List.of(
-                                        new DialogPrompt<>("Say Hi", scripts.testDialog1),
-                                        new DialogPrompt<>("Something...?", scripts.testDialog2)
+                                        new Prompt<>("Say Hi", scripts.testDialog1),
+                                        new Prompt<>("Something...?", scripts.testDialog2)
                                 );
                             }
                         })
@@ -50,26 +54,29 @@ public class Main {
                         })
                 )),
                 new Script<>(Collections.singletonList(
-                        new TextMessage<Scene1NpcReg>(npcs.testNpc1, new String[]{
+                        new TextMessage<>(npcs.testNpc1, new String[]{
                                 "Excuse me? I haven't the slightest",
                                 "what you are talking about, I sincerely",
                                 "apologize my fellow."
                         })
                 ))
         );
-//
-//        npcs.testNpc1.getDialogPrompts(scripts).get(1).script().play(new Player(), npcs);
 
-        UserQuery q = new UserQuery(
-                "What to do?",
-                new QueryOption("Something", () -> {
-                    System.out.println("yay");
-                }),
-                new QueryOption("Something *else*", () -> {
-                    System.out.println("wowah");
-                })
+        Scanner in = new Scanner(System.in);
+        var gameActions = List.of(
+            new Prompt<>("Talk", Action.TALK),
+            new Prompt<>("Move", Action.MOVE),
+            new Prompt<>("Examine", Action.EXAMINE),
+            new Prompt<>("Present", Action.PRESENT)
         );
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            switch (Prompt.ask(in, "What do you want to do?", gameActions)) {
+                case TALK -> {
 
-        q.run(new Scanner(System.in));
+                }
+                default -> {}
+            }
+        }
     }
 }

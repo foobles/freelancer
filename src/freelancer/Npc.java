@@ -47,7 +47,7 @@ public final class Npc<ScriptReg, NpcReg> {
         this.knowsPlayer = knowsPlayer;
     }
 
-    public List<DialogPrompt<NpcReg>> getDialogPrompts(ScriptReg scripts) {
+    public List<Prompt<Script<NpcReg>>> getDialogPrompts(ScriptReg scripts) {
         return brain.getDialogPrompts(scripts);
     }
 
