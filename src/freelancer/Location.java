@@ -1,5 +1,7 @@
 package freelancer;
 
+import java.util.List;
+
 public final class Location<ScriptReg, Env> {
     private final PromptTree<Env> examinationTree;
     private final String name;
@@ -9,12 +11,12 @@ public final class Location<ScriptReg, Env> {
 
     public Location(
             Npc<ScriptReg, Env> npc,
-            PromptTree<Env> examinationTree,
+            List<Prompt<PromptTreeNode<Env>>> examinationNodes,
             String name,
             String description
     ) {
         this.npc = npc;
-        this.examinationTree = examinationTree;
+        this.examinationTree = new PromptTree<>(description, examinationNodes);
         this.name = name;
         this.description = description;
     }
