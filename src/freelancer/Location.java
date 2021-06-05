@@ -1,22 +1,20 @@
 package freelancer;
 
 import java.util.List;
+import java.util.Optional;
 
 public final class Location<ScriptReg, Env> {
-    private final PromptTree<Env> examinationTree;
+    private final LocationState<ScriptReg, Env> state;
     private final String name;
     private final String description;
-    private Npc<ScriptReg, Env> npc;
-    private boolean familiarSituation = false;
+    private boolean familiar;
 
     public Location(
-            Npc<ScriptReg, Env> npc,
-            List<Prompt<PromptTreeNode<Env>>> examinationNodes,
+            LocationState<ScriptReg, Env> state,
             String name,
             String description
     ) {
-        this.npc = npc;
-        this.examinationTree = new PromptTree<>(description, examinationNodes);
+        this.state = state;
         this.name = name;
         this.description = description;
     }
@@ -24,32 +22,29 @@ public final class Location<ScriptReg, Env> {
     public String getName() {
         return name;
     }
-
     public String getDescription() {
         return description;
     }
 
-    public Npc<ScriptReg, Env> getNpc() {
-        return npc;
+    public Optional<Npc<ScriptReg, Env>> getNpc(Env env) {
+        return state.getNpc(env);
     }
 
-    public void setNpc(Npc<ScriptReg, Env> npc) {
-        this.npc = npc;
+    public boolean familiarize() {
+        boolean ret = !familiar;
+        familiar = true;
+        return ret;
     }
 
-    public void removeNpc() {
-        this.npc = null;
+    public Optional<Script<Env>> getIntroScript(ScriptReg scripts) {
+        return state.getIntroScript(scripts);
     }
 
-    public boolean isFamiliarSituation() {
-        return familiarSituation;
+    public PromptTree<Env> getExaminationTree(ScriptReg scripts) {
+        return state.getExaminationTree(scripts);
     }
 
-    public void setFamiliarSituation(boolean familiarSituation) {
-        this.familiarSituation = familiarSituation;
-    }
-
-    public PromptTree<Env> getExaminationTree() {
-        return examinationTree;
+    public List<Location<ScriptReg, Env>> getConnectingLocations(Env env) {
+        return state.getConnectingLocations(env);
     }
 }

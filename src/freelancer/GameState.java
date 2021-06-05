@@ -1,7 +1,9 @@
 package freelancer;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class GameState<ScriptReg, Env> {
     private final Scanner input;
@@ -51,40 +53,40 @@ public class GameState<ScriptReg, Env> {
 
         //noinspection InfiniteLoopStatement
         while (true) {
-            familiarizeLocation();
-            var npc = location.getNpc();
-            var actionPrompts = (npc != null)
+            if (location.familiarize()) {
+                System.out.println(location.getName());
+                System.out.println("  " + location.getDescription());
+                location.getIntroScript(scripts).ifPresent(scr -> scr.play(player, env));
+            }
+            Optional<Npc<ScriptReg, Env>> npc = location.getNpc(env);
+            var actionPrompts = npc.isPresent()
                     ? Action.NPC_PROMPTS
                     : Action.NO_NPC_PROMPTS;
 
             switch (Prompt.ask(input, "What now?", actionPrompts)) {
                 case TALK -> {
-                    assert npc != null;
-                    Prompt.ask(input, "About what?", npc.getDialogPrompts(scripts))
+                    assert npc.isPresent();
+                    Prompt.ask(input, "About what?", npc.get().getDialogPrompts(scripts))
                             .play(player, env);
                 }
                 case PRESENT -> {
-                    assert npc != null;
+                    assert npc.isPresent();
                     var evid_sort = Prompt.ask(input, "Present what?", EVID_SORT_PROMPTS);
                     var evidence = Prompt.ask(input, "", player.getEvidencePrompts(evid_sort));
-                    npc.getEvidenceResponse(scripts, evidence).play(player, env);
+                    npc.get().getEvidenceResponse(scripts, evidence).play(player, env);
                 }
-                case EXAMINE -> {
-                    location.getExaminationTree().run(input).play(player, env);
-                }
+                case EXAMINE -> location.getExaminationTree(scripts).runPrompt(input).play(player, env);
                 case MOVE -> {
-                    // TODO
-                    throw new RuntimeException("todo");
+                    var connectionPrompts = location
+                            .getConnectingLocations(env)
+                            .stream()
+                            .map(loc -> new Prompt<>(loc.getName(), loc))
+                            .collect(Collectors.toList());
+
+                    location = Prompt.ask(input, "Where to?", connectionPrompts);
                 }
             }
         }
     }
 
-    private void familiarizeLocation() {
-        if (!location.isFamiliarSituation()) {
-            System.out.println(location.getName());
-            System.out.println("\t" + location.getDescription());
-            location.setFamiliarSituation(true);
-        }
-    }
 }
