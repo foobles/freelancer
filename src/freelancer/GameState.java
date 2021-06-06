@@ -46,11 +46,7 @@ public class GameState<ScriptReg, Env> {
         this.location = startLoc;
     }
 
-    public void play(Script<Env> mediaRes) {
-        if (mediaRes != null) {
-            mediaRes.play(player, env);
-        }
-
+    public void play() {
         //noinspection InfiniteLoopStatement
         while (true) {
             if (location.familiarize()) {
