@@ -19,7 +19,7 @@ public final class Player {
     public List<Prompt<Evidence>> getEvidencePrompts(Evidence.Sort sort) {
         return evidence.stream()
                 .filter(e -> e.getSort() == sort)
-                .map(e -> new Prompt<>(e.getName(), e))
+                .map(e -> new Prompt<>(e.getName() + " - " + e.getDescription(), e))
                 .collect(Collectors.toList());
     }
 

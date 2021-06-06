@@ -62,16 +62,24 @@ public class GameState<ScriptReg, Env> {
             switch (Prompt.ask(input, "What now?", actionPrompts)) {
                 case TALK -> {
                     assert npc.isPresent();
-                    Prompt.ask(input, "About what?", npc.get().getDialogPrompts(scripts))
-                            .play(player, env);
+                    Prompt.askOptional(input, "About what?", npc.get().getDialogPrompts(scripts))
+                            .ifPresent(scr -> scr.play(player, env));
                 }
+
                 case PRESENT -> {
                     assert npc.isPresent();
-                    var evid_sort = Prompt.ask(input, "Present what?", EVID_SORT_PROMPTS);
-                    var evidence = Prompt.ask(input, "", player.getEvidencePrompts(evid_sort));
-                    npc.get().getEvidenceResponse(scripts, evidence).play(player, env);
+                    Prompt.askOptional(input, "Present what?", EVID_SORT_PROMPTS).flatMap(evidSort ->
+                        Prompt.askOptional(input, "", player.getEvidencePrompts(evidSort))
+                    ).ifPresent(e -> npc.get()
+                            .getEvidenceResponse(scripts, e.getID())
+                            .play(player, env)
+                    );
                 }
-                case EXAMINE -> location.getExaminationTree(scripts).runPrompt(input).play(player, env);
+
+                case EXAMINE -> location.getExaminationTree(scripts)
+                        .runPromptOptional(input)
+                        .ifPresent(scr -> scr.play(player, env));
+
                 case MOVE -> {
                     var connectionPrompts = location
                             .getConnectingLocations(env)
@@ -79,7 +87,8 @@ public class GameState<ScriptReg, Env> {
                             .map(loc -> new Prompt<>(loc.getName(), loc))
                             .collect(Collectors.toList());
 
-                    location = Prompt.ask(input, "Where to?", connectionPrompts);
+                    Prompt.askOptional(input, "Where to?", connectionPrompts)
+                            .ifPresent(newLoc -> location = newLoc);
                 }
             }
         }
