@@ -3,6 +3,7 @@ package freelancer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public final class Player {
@@ -33,4 +34,16 @@ public final class Player {
         }
         evidence.add(toAdd);
     }
+
+    public Optional<Evidence> promptEvidenceOptional(Scanner input, String p) {
+        return Prompt.askOptional(input, p, EVID_SORT_PROMPTS).flatMap(sort ->
+                Prompt.askOptional(input, "", getEvidencePrompts(sort))
+        );
+    }
+
+    private static final List<Prompt<Evidence.Sort>> EVID_SORT_PROMPTS = List.of(
+            new Prompt<>("Item", Evidence.Sort.Item),
+            new Prompt<>("Hearsay", Evidence.Sort.Hearsay),
+            new Prompt<>("Profile", Evidence.Sort.Profile)
+    );
 }

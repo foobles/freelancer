@@ -28,12 +28,6 @@ public class GameState<ScriptReg, Env> {
         );
     }
 
-    private static final List<Prompt<Evidence.Sort>> EVID_SORT_PROMPTS = List.of(
-            new Prompt<>("Item", Evidence.Sort.Item),
-            new Prompt<>("Hearsay", Evidence.Sort.Hearsay),
-            new Prompt<>("Profile", Evidence.Sort.Profile)
-    );
-
     public GameState(
             Scanner input,
             ScriptReg scripts,
@@ -68,12 +62,11 @@ public class GameState<ScriptReg, Env> {
 
                 case PRESENT -> {
                     assert npc.isPresent();
-                    Prompt.askOptional(input, "Present what?", EVID_SORT_PROMPTS).flatMap(evidSort ->
-                        Prompt.askOptional(input, "", player.getEvidencePrompts(evidSort))
-                    ).ifPresent(e -> npc.get()
-                            .getEvidenceResponse(scripts, e.getID())
-                            .play(player, env)
-                    );
+                    player.promptEvidenceOptional(input, "Present what?")
+                            .ifPresent(e -> npc.get()
+                                    .getEvidenceResponse(scripts, e.getID())
+                                    .play(player, env)
+                            );
                 }
 
                 case EXAMINE -> location.getExaminationTree(scripts)
