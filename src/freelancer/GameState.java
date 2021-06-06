@@ -46,7 +46,7 @@ public class GameState<ScriptReg, Env> {
             if (location.familiarize()) {
                 System.out.println(location.getName());
                 System.out.println("  " + location.getDescription());
-                location.getIntroScript(scripts).ifPresent(scr -> scr.play(player, env));
+                location.getIntroScript(scripts).ifPresent(scr -> scr.play(input, player, env));
             }
             Optional<Npc<ScriptReg, Env>> npc = location.getNpc(env);
             var actionPrompts = npc.isPresent()
@@ -57,7 +57,7 @@ public class GameState<ScriptReg, Env> {
                 case TALK -> {
                     assert npc.isPresent();
                     Prompt.askOptional(input, "About what?", npc.get().getDialogPrompts(scripts))
-                            .ifPresent(scr -> scr.play(player, env));
+                            .ifPresent(scr -> scr.play(input, player, env));
                 }
 
                 case PRESENT -> {
@@ -65,13 +65,13 @@ public class GameState<ScriptReg, Env> {
                     player.promptEvidenceOptional(input, "Present what?")
                             .ifPresent(e -> npc.get()
                                     .getEvidenceResponse(scripts, e.getID())
-                                    .play(player, env)
+                                    .play(input, player, env)
                             );
                 }
 
                 case EXAMINE -> location.getExaminationTree(scripts)
                         .runPromptOptional(input)
-                        .ifPresent(scr -> scr.play(player, env));
+                        .ifPresent(scr -> scr.play(input, player, env));
 
                 case MOVE -> {
                     var connectionPrompts = location

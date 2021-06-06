@@ -69,4 +69,9 @@ public record Prompt<T>(String desc, T value) {
         System.out.print("You must enter a number from 1-" + n + ".");
         in.nextLine();
     }
+
+    public static final List<Prompt<Boolean>> YES_NO = List.of(
+            new Prompt<>("Yes", true),
+            new Prompt<>("No", false)
+    );
 }
