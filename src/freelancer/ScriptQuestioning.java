@@ -3,17 +3,17 @@ package freelancer;
 import java.util.List;
 import java.util.Scanner;
 
-public final class Questioning<Env> implements ScriptEvent<Env> {
+public final class ScriptQuestioning<Env> implements Script<Env> {
     private final List<Prompt<StatementDetail<Env>>> details;
     private final Script<Env> retortNonContradictory;
 
-    public Questioning(List<Prompt<StatementDetail<Env>>> details, Script<Env> retortNonContradictory) {
+    public ScriptQuestioning(List<Prompt<StatementDetail<Env>>> details, Script<Env> retortNonContradictory) {
         this.details = details;
         this.retortNonContradictory = retortNonContradictory;
     }
 
     @Override
-    public void run(Scanner input, Player p, Env env) {
+    public void play(Scanner input, Player p, Env env) {
         String pressQuestion = "Press further?";
         while (Prompt.ask(input, pressQuestion, Prompt.YES_NO)) {
             pressQuestion = "Keep pressing?";
