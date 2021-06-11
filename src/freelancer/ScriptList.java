@@ -3,7 +3,7 @@ package freelancer;
 import java.util.List;
 import java.util.Scanner;
 
-public final class ScriptList<Env> {
+public final class ScriptList<Env> implements Script<Env> {
     private final List<Script<Env>> events;
 
     public ScriptList(List<Script<Env>> events) {

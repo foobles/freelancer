@@ -3,7 +3,7 @@ package freelancer;
 import java.util.List;
 import java.util.Scanner;
 
-public class ScriptCond<Env> implements Script<Env> {
+public final class ScriptCond<Env> implements Script<Env> {
     private final Cond<Env> cond;
     private final List<Script<Env>> scripts;
 
