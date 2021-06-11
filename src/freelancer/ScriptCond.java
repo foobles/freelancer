@@ -17,20 +17,6 @@ public final class ScriptCond<Env> implements Script<Env> {
         this.scripts = scripts;
     }
 
-    public ScriptCond(GameCondition<Env> cond, Script<Env> script1, Script<Env> script2) {
-        this(
-                (p, e) -> cond.test(p, e) ? 0 : 1,
-                List.of(script1, script2)
-        );
-    }
-
-    public ScriptCond(GameCondition<Env> cond, Script<Env> script) {
-        this(
-                (p, e) -> cond.test(p, e) ? 0 : -1,
-                List.of(script)
-        );
-    }
-
     @Override
     public void play(Scanner input, Player p, Env env) {
         int idx = cond.getScriptIdx(p, env);
